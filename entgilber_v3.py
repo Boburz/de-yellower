@@ -87,8 +87,8 @@ blackish = [0, 0, 0]
 # 0.00: no movement; 1.00: set to "ideal"
 # "ideal" is "white" for white and yellow, and "black" for black
 cRY = 0.99
-cRW = 0.00
-cRB = 0.00
+cRW = 0.50
+cRB = 0.50
 
 ################################################################################
 ################################################################################
@@ -98,10 +98,18 @@ print('START')
 start_time = time.time()
 
 # open input file
-inFile = 'K27.jpg'
+inFile = '38_bemalt.png'
 inImage = Image.open(inFile)
 width, height = inImage.size
 print('  loaded file ' + str(inFile) + '...')
+
+# determine output file
+if inFile.endswith('.png'):
+    outFile = inFile[:-4] + '_deyellowed_' + str(int(cRY*100)) + '-' + str(int(cRW*100)) + '-' + str(int(cRB*100)) + '.png'
+elif inFile.endswith('.jpg'):
+    outFile = inFile[:-4] + '_deyellowed_' + str(int(cRY*100)) + '-' + str(int(cRW*100)) + '-' + str(int(cRB*100)) + '.jpg'
+else:
+    print('ERROR: input file has invalid file extension')
 
 # build list with pixels
 print('  loading pixels...')
@@ -147,17 +155,8 @@ for yCoord in range(height):
         inImage.putpixel((xCoord, yCoord), (pixel[0], pixel[1], pixel[2], 255))
 adjust_time = time.time()
 
-# determine output file
-if inFile.endswith('.png'):
-    outFile = inFile[:-4] + '_deyellowed_' + str(int(cRY*100)) + '-' + str(int(cRW*100)) + '-' + str(int(cRB*100)) + '.png'
-    print('  writing to file ' + str(outFile) + '...')
-elif inFile.endswith('.jpg'):
-    outFile = inFile[:-4] + '_deyellowed_' + str(int(cRY*100)) + '-' + str(int(cRW*100)) + '-' + str(int(cRB*100)) + '.jpg'
-    print('  writing to file ' + str(outFile) + '...')
-else:
-    print('ERROR: input file has invalid file extension')
-
 # write into output file
+print('  writing to file ' + str(outFile) + '...')
 inImage.save(outFile)
 write_time = time.time()
 
